@@ -5,32 +5,30 @@ class BunnyHop:
         # size is up to but not including, valid indexes are [0, size)
         self._size = size
         self._bunny_location = 0
-        self.setup_board()
+        self.place_bunny()
 
     @property
     def size(self) -> int:
         return self._size
 
-    def setup_board(self) -> None:
+    def place_bunny(self) -> None:
         self._bunny_location = random.randint(0, self._size - 1)
 
-    def check(self, hole: int) -> bool:
-        if hole == self._bunny_location:
+    def check(self, location: int) -> bool:
+        if location == self._bunny_location:
             return True
-        self._set_next_location()
+        self._adjust_bunny()
         return False
 
-    def _set_next_location(self) -> None:
-        next_move = random.choice((-1, 1))
-        new_location = self._bunny_location + next_move
-        if new_location == self._size:
-            new_location -= 2 # If the new location moves past the upper bound, step to the left
-        elif new_location == -1:
-            new_location += 2 # If the new location moves past the lower bound, step to the right
-        self._bunny_location = new_location
+    def _adjust_bunny(self) -> None: # On a wrong selection, adjust the bunny
+        self._bunny_location += random.choice((-1, 1))
+        if self._bunny_location == self._size:
+            self._bunny_location -= 2 # If the new location moves past the upper bound, step to the left
+        elif self._bunny_location == -1:
+            self._bunny_location += 2 # If the new location moves past the lower bound, step to the right
 
 
-def main():
+def _main():
     total = 10000
     found = 0
     even = 0
@@ -38,6 +36,7 @@ def main():
     for _ in range(total):
         bunny = BunnyHop(100)
         found_bunny = False
+
         for i in range(bunny.size):
             if bunny.check(i):
                 found_bunny = True
@@ -58,4 +57,4 @@ def main():
     print(f"Even: {even} {even/total},  Odd: {odd} {odd/total}")
 
 if __name__ == "__main__":
-    main()
+    _main()
